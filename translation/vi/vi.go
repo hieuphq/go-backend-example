@@ -20,6 +20,7 @@ func Init(uni *ut.UniversalTranslator, validate *validator.Validate) error {
 
 	vi.Add("username", "tên đăng nhập", false)
 	vi.Add("password", "mật khẩu", false)
+	vi.Add("amount", "số lượng sản phẩm", false)
 	vi.Add("bad request", "không thể thực hiện yêu cầu", false)
 
 	// validator translations & Overrides

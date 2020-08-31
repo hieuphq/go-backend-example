@@ -84,7 +84,7 @@ func (h *Handler) handleError(c *gin.Context, err error) {
 	}
 
 	// log data to console
-	logData, _ := c.Get(constant.LanguageKey)
+	logData, _ := c.Get(constant.LogDataKey)
 	h.log.Error(logData, err)
 
 	c.AbortWithStatusJSON(parsedErr.Code, parsedErr.ToResponseError())

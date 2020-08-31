@@ -96,5 +96,6 @@ func (a App) setupRouter() *gin.Engine {
 	// handlers
 	r.GET("/healthz", h.Healthz)
 	r.POST("/signup", h.Signup)
+	r.POST("/orders", h.CreateOrder)
 	return r
 }
