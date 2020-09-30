@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 
 	"github.com/dwarvesf/gerr"
 	"github.com/gin-contrib/cors"
@@ -45,6 +46,15 @@ func (a App) Run() {
 	router := a.setupRouter()
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
+
+	gerr.SetCleanPathFunc(func(path string) string {
+		projName := "go-backend-example/"
+		startIdx := strings.Index(path, projName)
+		if startIdx >= 0 {
+			path = path[startIdx+len(projName):]
+		}
+		return path
+	})
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", a.cfg.Port),

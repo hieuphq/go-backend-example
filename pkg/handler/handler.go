@@ -60,13 +60,12 @@ func (h *Handler) handleError(c *gin.Context, err error) {
 		if err != nil {
 			msg = badRequest
 		}
-		rs := gerr.MakeErrorFromCombinedError(gerr.CombinedError{
-			Code:    http.StatusBadRequest,
-			Message: msg,
-			Items:   childrens,
-		})
-
-		parsedErr = *rs
+		rs := gerr.CombinedE(
+			http.StatusBadRequest,
+			msg,
+			childrens,
+		)
+		parsedErr = *rs.ToError()
 
 	case gerr.Error:
 		parsedErr = arg
@@ -84,10 +83,16 @@ func (h *Handler) handleError(c *gin.Context, err error) {
 	}
 
 	// log data to console
-	logData, _ := c.Get(constant.LogDataKey)
-	h.log.Error(logData, err)
+	logDataRaw, ok := c.Get(constant.LogDataKey)
+	traceID := ""
+	if ok {
+		if ld, parsed := logDataRaw.(gerr.LogInfo); parsed {
+			traceID = ld.GetTraceID()
+		}
+	}
+	h.log.Log(logDataRaw, parsedErr)
 
-	c.AbortWithStatusJSON(parsedErr.Code, parsedErr.ToResponseError())
+	c.AbortWithStatusJSON(parsedErr.StatusCode(), parsedErr.ToResponseError(traceID))
 }
 
 func makeKeysFromTarget(target string) []string {

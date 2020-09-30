@@ -52,7 +52,7 @@ func NewLogDataMiddleware(service string, environment string, config ...GinConfi
 				Path:      c.Request.URL.Path,
 				IP:        c.ClientIP(),
 				UserAgent: c.Request.UserAgent(),
-				TracingID: rid,
+				TraceID:   rid,
 			})
 		c.Set(constant.LogDataKey, dt)
 		c.Writer.Header().Set(cfg.HeaderRequestIDKey(), rid)
